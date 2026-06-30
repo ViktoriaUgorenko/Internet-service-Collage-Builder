@@ -1,0 +1,106 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:148.0) Gecko/20100101 Firefox/148.0">
+  <diagram name="Архитектура проекта Collages" id="DIJw9bACF-eQf6qXtm-x">
+    <mxGraphModel dx="1395" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="browser" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="Браузер" vertex="1">
+          <mxGeometry height="155" width="220" x="100" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="react-client" parent="1" style="shape=module;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=14;" value="React 18 + TypeScript&lt;div&gt;Vite 5.1.4&lt;/div&gt;&lt;div&gt;Fabric.js 5.3.0&lt;/div&gt;&lt;div&gt;React Router 6.22.1&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="180" x="120" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="docker-env" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="Docker Compose Stack" vertex="1">
+          <mxGeometry height="680" width="830" x="350" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="nginx-container" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="NGINX Container" vertex="1">
+          <mxGeometry height="270" width="330" x="430" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="nginx-server" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="NGINX Server" vertex="1">
+          <mxGeometry height="185" width="255" x="467.5" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="nginx-func" parent="1" style="shape=module;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=14;" value="&lt;div&gt;Reverse Proxy&lt;/div&gt;&lt;div&gt;HTTPS → HTTP&lt;/div&gt;&lt;div&gt;SSL/TLS Termination&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="200" x="489" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="client-container" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="Client Container" vertex="1">
+          <mxGeometry height="130" width="270" x="840" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="vite-server" parent="1" style="shape=module;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=14;" value="&lt;div style=&quot;text-align: right;&quot;&gt;Vite Dev Server&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="215" x="855" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-container" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="Backend Container" vertex="1">
+          <mxGeometry height="250" width="360" x="430" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="node-server" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="Node.js Server" vertex="1">
+          <mxGeometry height="185" width="279" x="470" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="express-api" parent="1" style="shape=module;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=14;" value="&lt;div&gt;Express 4.18.2&lt;/div&gt;&lt;div&gt;TypeScript 5.3.3&lt;/div&gt;&lt;div&gt;Prisma 5.10.2&lt;/div&gt;&lt;div&gt;JWT Authentication&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="230" x="489" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="db-container" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="Database Container" vertex="1">
+          <mxGeometry height="190" width="270" x="870" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontFamily=Times New Roman;fontSize=14;" value="&lt;div&gt;PostgreSQL 15&lt;/div&gt;&lt;div&gt;Prisma ORM&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="175" x="917.5" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="external-services" parent="1" style="verticalAlign=top;align=center;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fontFamily=Times New Roman;fontSize=14;" value="External Services" vertex="1">
+          <mxGeometry height="125" width="210" x="1275" y="192.5" as="geometry" />
+        </mxCell>
+        <mxCell id="unsplash" parent="1" style="shape=module;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=14;" value="Unsplash API" vertex="1">
+          <mxGeometry height="52.5" width="160" x="1300" y="237.5" as="geometry" />
+        </mxCell>
+        <mxCell id="conn1" edge="1" parent="1" source="browser" style="endArrow=classic;startArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontFamily=Times New Roman;fontSize=14;entryX=0.002;entryY=0.501;entryDx=0;entryDy=0;entryPerimeter=0;" target="nginx-server" value="HTTPS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="370" />
+              <mxPoint x="390" y="370" />
+              <mxPoint x="390" y="150" />
+              <mxPoint x="595" y="150" />
+            </Array>
+            <mxPoint x="595" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn2" edge="1" parent="1" style="endArrow=classic;startArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontSize=14;" target="vite-server" value="HTTP&amp;nbsp;">
+          <mxGeometry relative="1" x="0.1849" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="620" y="400" />
+              <mxPoint x="800" y="400" />
+              <mxPoint x="800" y="255" />
+            </Array>
+            <mxPoint x="620" y="363" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn3" edge="1" parent="1" style="endArrow=classic;startArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0.344;entryY=0.003;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontSize=14;entryPerimeter=0;" target="node-server" value="HTTP">
+          <mxGeometry relative="1" x="-0.2683" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="560" y="410" />
+              <mxPoint x="800" y="410" />
+              <mxPoint x="800" y="529" />
+            </Array>
+            <mxPoint x="560" y="362" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn4" edge="1" parent="1" style="endArrow=classic;startArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontFamily=Times New Roman;fontSize=14;entryX=0.012;entryY=0.418;entryDx=0;entryDy=0;entryPerimeter=0;" target="postgres" value="TCP&amp;nbsp;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="719" y="569.4599999999999" as="sourcePoint" />
+            <mxPoint x="926.54" y="570.51" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn5" edge="1" parent="1" source="express-api" style="endArrow=classic;startArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontSize=14;exitX=0.997;exitY=0.326;exitDx=0;exitDy=0;exitPerimeter=0;" target="unsplash" value="HTTPS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="549" />
+              <mxPoint x="840" y="400" />
+              <mxPoint x="1130" y="400" />
+              <mxPoint x="1130" y="264" />
+            </Array>
+            <mxPoint x="720" y="580" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

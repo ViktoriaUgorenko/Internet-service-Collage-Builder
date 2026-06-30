@@ -1,0 +1,108 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============== ENUMS ==============
+enum Role {
+  GUEST
+  USER
+  ADMIN
+}
+
+enum MediaSource {
+  UPLOAD
+  UNSPLASH
+}
+
+enum ElementType {
+  IMAGE
+  TEXT
+  SHAPE
+  STICKER
+}
+
+// ============== MODELS ==============
+model User {
+  id           String     @id @default(uuid())
+  email        String?    @unique
+  passwordHash String?
+  name         String?
+  role         Role       @default(GUEST)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  projects     Project[]
+  templates    Template[]
+  media        Media[]
+
+  @@map("users")
+}
+
+model Project {
+  id           String   @id @default(uuid())
+  title        String
+  canvasData   Json
+  thumbnailUrl String?
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  elements     CollageElement[]
+
+  @@map("projects")
+}
+
+model CollageElement {
+  id        String      @id @default(uuid())
+  type      ElementType
+  data      Json
+  position  Json
+  layer     Int
+  projectId String
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("collage_elements")
+}
+
+model Template {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  thumbnailUrl String?
+  canvasData   Json
+  category     String   @default("Other")
+  isPublic     Boolean  @default(false)
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("templates")
+}
+
+model Media {
+  id        String      @id @default(uuid())
+  url       String
+  filename  String?
+  mimeType  String?
+  size      Int?
+  width     Int?
+  height    Int?
+  source    MediaSource @default(UPLOAD)
+  authorName String?
+  authorUrl  String?
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@map("media")
+}

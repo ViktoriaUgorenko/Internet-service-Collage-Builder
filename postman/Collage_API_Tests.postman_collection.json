@@ -1,0 +1,537 @@
+{
+  "info": {
+    "name": "Collage Maker API — AT-01..AT-15",
+    "description": "Автоматизированное тестирование REST API (Таблица 4.2)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",   "value": "https://localhost",  "type": "string" },
+    { "key": "token",     "value": "",                   "type": "string" },
+    { "key": "projectId", "value": "",                   "type": "string" },
+    { "key": "mediaId",   "value": "",                   "type": "string" },
+    { "key": "testEmail", "value": "at_test_{{$randomInt}}@example.com", "type": "string" },
+    { "key": "testPass",  "value": "Test1234",           "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "AT-01 — Активность сервиса и БД",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-01: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-01: поле status = ok', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.status).to.eql('ok');",
+              "});",
+              "pm.test('AT-01: БД подключена', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.db).to.eql('connected');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "AT-02 — Регистрация пользователя",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const ts = Date.now();",
+              "pm.collectionVariables.set('testEmail', `at_test_${ts}@example.com`);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-02: статус 201 или 200', () => {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "pm.test('AT-02: есть token', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.token).to.be.a('string').and.not.empty;",
+              "  pm.collectionVariables.set('token', body.token);",
+              "});",
+              "pm.test('AT-02: есть данные пользователя', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.email).to.be.a('string');",
+              "  pm.expect(body.id).to.be.a('string');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPass}}\"\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/register"
+      }
+    },
+    {
+      "name": "AT-03 — Отказ при дубликате email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-03: статус 4xx', () => {",
+              "  pm.expect(pm.response.code).to.be.within(400, 499);",
+              "});",
+              "pm.test('AT-03: сообщение об ошибке присутствует', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.message).to.be.a('string').and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPass}}\"\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/register"
+      }
+    },
+    {
+      "name": "AT-04 — Вход (login)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-04: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-04: есть token', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.token).to.be.a('string').and.not.empty;",
+              "  pm.collectionVariables.set('token', body.token);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPass}}\"\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "AT-05 — Отказ входа (неверный пароль)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-05: статус 401', () => pm.response.to.have.status(401));",
+              "pm.test('AT-05: сообщение об ошибке', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.message).to.be.a('string').and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"wrong_password_xyz\"\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "AT-06 — Текущий пользователь (/auth/me)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-06: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-06: профиль соответствует владельцу токена', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.email).to.eql(pm.collectionVariables.get('testEmail'));",
+              "  pm.expect(body.id).to.be.a('string');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/auth/me"
+      }
+    },
+    {
+      "name": "AT-07 — Список проектов",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-07: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-07: ответ — массив', () => {",
+              "  pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/projects"
+      }
+    },
+    {
+      "name": "AT-08 — Создание проекта",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-08: статус 201', () => pm.response.to.have.status(201));",
+              "pm.test('AT-08: проект содержит id', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.id).to.be.a('string').and.not.empty;",
+              "  pm.collectionVariables.set('projectId', body.id);",
+              "});",
+              "pm.test('AT-08: title совпадает', () => {",
+              "  pm.expect(pm.response.json().title).to.eql('AT Test Project');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",   "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"AT Test Project\",\n  \"width\": 1080,\n  \"height\": 1080,\n  \"canvasData\": {}\n}"
+        },
+        "url": "{{baseUrl}}/api/projects"
+      }
+    },
+    {
+      "name": "AT-09 — Чтение проекта по id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-09: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-09: id совпадает', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.id).to.eql(pm.collectionVariables.get('projectId'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}"
+      }
+    },
+    {
+      "name": "AT-10 — Обновление проекта",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-10: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-10: title обновлён', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.title).to.eql('AT Updated Title');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",   "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"AT Updated Title\",\n  \"canvasData\": { \"updated\": true }\n}"
+        },
+        "url": "{{baseUrl}}/api/projects/{{projectId}}"
+      }
+    },
+    {
+      "name": "AT-10b — Проверка сохранения обновления (GET после PUT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-10b: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-10b: изменения сохранены', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.title).to.eql('AT Updated Title');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}"
+      }
+    },
+    {
+      "name": "AT-11 — Удаление проекта",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-11: статус 200 или 204', () => {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}"
+      }
+    },
+    {
+      "name": "AT-11b — Проверка отсутствия удалённого проекта в списке",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-11b: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-11b: удалённый проект отсутствует', () => {",
+              "  const list = pm.response.json();",
+              "  const found = list.some(p => p.id === pm.collectionVariables.get('projectId'));",
+              "  pm.expect(found).to.be.false;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/projects"
+      }
+    },
+    {
+      "name": "AT-12 — Список шаблонов",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-12: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-12: ответ — массив', () => {",
+              "  pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/templates"
+      }
+    },
+    {
+      "name": "AT-13 — Загрузка файла (upload)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Минимальный валидный PNG 1×1 px (красный пиксель) в base64",
+              "const PNG_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg==';",
+              "",
+              "// Декодируем base64 → бинарный массив",
+              "const binary = atob(PNG_B64);",
+              "const bytes = new Uint8Array(binary.length);",
+              "for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);",
+              "",
+              "// Формируем multipart/form-data вручную",
+              "const boundary = '----PostmanBoundary' + Date.now();",
+              "const CRLF = '\\r\\n';",
+              "",
+              "// Заголовок части",
+              "const partHeader = '--' + boundary + CRLF",
+              "  + 'Content-Disposition: form-data; name=\"file\"; filename=\"test.png\"' + CRLF",
+              "  + 'Content-Type: image/png' + CRLF",
+              "  + CRLF;",
+              "",
+              "// Финальная граница",
+              "const partFooter = CRLF + '--' + boundary + '--' + CRLF;",
+              "",
+              "// Собираем тело как строку (Postman sendRequest принимает строку)",
+              "// PNG бинарные данные кодируем обратно в latin1-совместимую строку",
+              "let bodyStr = partHeader;",
+              "for (let i = 0; i < bytes.length; i++) bodyStr += String.fromCharCode(bytes[i]);",
+              "bodyStr += partFooter;",
+              "",
+              "const token = pm.collectionVariables.get('token');",
+              "const baseUrl = pm.collectionVariables.get('baseUrl');",
+              "",
+              "pm.sendRequest({",
+              "  url: baseUrl + '/api/images/upload',",
+              "  method: 'POST',",
+              "  header: {",
+              "    'Authorization': 'Bearer ' + token,",
+              "    'Content-Type': 'multipart/form-data; boundary=' + boundary",
+              "  },",
+              "  body: {",
+              "    mode: 'raw',",
+              "    raw: bodyStr",
+              "  }",
+              "}, (err, res) => {",
+              "  if (err) {",
+              "    pm.collectionVariables.set('at13_status', '0');",
+              "    pm.collectionVariables.set('at13_body', JSON.stringify({ error: err.message }));",
+              "  } else {",
+              "    pm.collectionVariables.set('at13_status', String(res.code));",
+              "    pm.collectionVariables.set('at13_body', res.text());",
+              "  }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Результаты из pre-request скрипта",
+              "const status = parseInt(pm.collectionVariables.get('at13_status') || '0');",
+              "let body = {};",
+              "try { body = JSON.parse(pm.collectionVariables.get('at13_body') || '{}'); } catch(e) {}",
+              "",
+              "pm.test('AT-13: статус 201', () => {",
+              "  pm.expect(status).to.eql(201);",
+              "});",
+              "",
+              "pm.test('AT-13: есть данные media (id и url)', () => {",
+              "  pm.expect(body.id).to.be.a('string').and.not.empty;",
+              "  pm.expect(body.url).to.be.a('string').and.not.empty;",
+              "  if (body.id) pm.collectionVariables.set('mediaId', body.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/health",
+        "description": "Реальный upload выполняется в pre-request скрипте через pm.sendRequest с синтетическим PNG 1×1 px. Этот GET /health используется только как триггер для запуска скриптов."
+      }
+    },
+    {
+      "name": "AT-14 — Медиатека (library)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-14: статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('AT-14: ответ — массив', () => {",
+              "  pm.expect(pm.response.json()).to.be.an('array');",
+              "});",
+              "pm.test('AT-14: загруженный файл присутствует', () => {",
+              "  const list = pm.response.json();",
+              "  const mediaId = pm.collectionVariables.get('mediaId');",
+              "  if (mediaId) {",
+              "    const found = list.some(m => m.id === mediaId);",
+              "    pm.expect(found).to.be.true;",
+              "  } else {",
+              "    pm.expect(list).to.be.an('array');",
+              "  }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/images/library"
+      }
+    },
+    {
+      "name": "AT-15 — Доступ без токена (401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('AT-15: статус 401', () => pm.response.to.have.status(401));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/projects"
+      }
+    }
+  ]
+}
